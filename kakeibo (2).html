@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="家計簿">
+<title>家計簿</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f5f4; --bg3: #efefed;
+    --text: #1a1a18; --text2: #6b6b67; --text3: #a0a09c;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.22);
+    --radius: 12px; --radius-sm: 8px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg2: #252523; --bg3: #2e2e2b;
+      --text: #f0efe8; --text2: #9a9993; --text3: #5c5c58;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+    }
+  }
+  html, body { height: 100%; background: var(--bg3); }
+  body { font-family: -apple-system, 'Hiragino Sans', 'Noto Sans JP', sans-serif; color: var(--text); }
+  .app { max-width: 480px; margin: 0 auto; min-height: 100vh; background: var(--bg3); padding-bottom: 80px; }
+  .header { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 14px 20px 12px; position: sticky; top: 0; z-index: 10; }
+  .header h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .header p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; background: var(--bg); border-top: 0.5px solid var(--border); display: flex; z-index: 10; padding-bottom: env(safe-area-inset-bottom, 0); }
+  .nav-btn { flex: 1; padding: 10px 0 8px; border: none; background: transparent; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--text3); font-size: 10px; }
+  .nav-btn.active { color: #378ADD; }
+  .nav-icon { font-size: 20px; line-height: 1; }
+  .tab-content { display: none; padding: 16px; }
+  .tab-content.active { display: block; }
+  .card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 16px; margin-bottom: 12px; }
+  .field { margin-bottom: 16px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 8px; letter-spacing: 0.3px; text-transform: uppercase; }
+  input[type="date"], input[type="text"], input[type="number"], input[type="url"] {
+    width: 100%; padding: 11px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius-sm);
+    background: var(--bg2); color: var(--text); font-size: 16px; outline: none;
+    -webkit-appearance: none; appearance: none;
+  }
+  input:focus { border-color: #378ADD; background: var(--bg); }
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .cat-btn { padding: 12px 4px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 13px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .cat-btn .icon { font-size: 20px; }
+  .cat-btn.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; }
+  @media (prefers-color-scheme: dark) { .cat-btn.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
+  .payer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .payer-btn { padding: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 15px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+  .avatar-f { background: #C0DD97; color: #27500A; }
+  .avatar-y { background: #F5C4B3; color: #712B13; }
+  .payer-btn.active-f { background: #EAF3DE; border-color: #639922; color: #27500A; }
+  .payer-btn.active-y { background: #FAECE7; border-color: #D85A30; color: #712B13; }
+  @media (prefers-color-scheme: dark) {
+    .payer-btn.active-f { background: #1a2e0d; border-color: #639922; color: #97C459; }
+    .payer-btn.active-y { background: #2e1508; border-color: #D85A30; color: #F0997B; }
+  }
+  .submit-btn { width: 100%; padding: 15px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 4px; }
+  .submit-btn:active { opacity: 0.8; }
+  .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .sum-card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 14px; }
+  .sum-card .lbl { font-size: 11px; color: var(--text2); font-weight: 500; letter-spacing: 0.3px; text-transform: uppercase; }
+  .sum-card .val { font-size: 22px; font-weight: 600; color: var(--text); margin-top: 4px; letter-spacing: -0.5px; }
+  .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .refresh-btn { font-size: 12px; padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: 6px; background: var(--bg2); color: var(--text2); cursor: pointer; }
+  .entry { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
+  .entry:last-child { border-bottom: none; }
+  .entry-cat { font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; font-weight: 500; }
+  @media (prefers-color-scheme: dark) { .entry-cat { background: #0d2a45; color: #85B7EB; } }
+  .entry-info { flex: 1; min-width: 0; }
+  .entry-name { font-size: 14px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .entry-meta { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .entry-amount { font-size: 15px; font-weight: 600; color: var(--text); white-space: nowrap; }
+  .empty { text-align: center; padding: 2.5rem 0; color: var(--text3); font-size: 14px; }
+  .loading { text-align: center; padding: 2rem 0; color: var(--text3); font-size: 14px; }
+  .no-sheet { background: #FFF8E6; border: 0.5px solid #EF9F27; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: #633806; line-height: 1.7; margin-bottom: 12px; }
+  @media (prefers-color-scheme: dark) { .no-sheet { background: #2a1e05; border-color: #BA7517; color: #FAC775; } }
+  /* Analytics */
+  .month-selector { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .month-nav { width: 36px; height: 36px; border: 0.5px solid var(--border2); border-radius: 50%; background: var(--bg2); color: var(--text2); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .month-nav:active { background: var(--bg3); }
+  .month-label { font-size: 16px; font-weight: 600; color: var(--text); }
+  .payer-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .payer-tab { flex: 1; padding: 8px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); font-size: 13px; color: var(--text2); cursor: pointer; text-align: center; }
+  .payer-tab.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; font-weight: 500; }
+  @media (prefers-color-scheme: dark) { .payer-tab.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
+  .cat-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
+  .cat-row:last-child { border-bottom: none; }
+  .cat-row-label { font-size: 13px; color: var(--text); width: 68px; flex-shrink: 0; }
+  .cat-bar-wrap { flex: 1; }
+  .cat-bar-bg { background: var(--bg2); border-radius: 3px; height: 8px; overflow: hidden; }
+  .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+  .cat-row-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 68px; text-align: right; flex-shrink: 0; }
+  .total-row { display: flex; justify-content: space-between; padding: 10px 0 2px; font-size: 14px; font-weight: 600; color: var(--text); border-top: 0.5px solid var(--border2); margin-top: 4px; }
+  .payer-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+  .payer-split-card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 12px 14px; }
+  .payer-split-name { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+  .payer-split-val { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.5px; }
+  .payer-split-pct { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .trend-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
+  .trend-row:last-child { border-bottom: none; }
+  .trend-month { font-size: 13px; color: var(--text2); width: 52px; flex-shrink: 0; }
+  .trend-bar-bg { flex: 1; background: var(--bg2); border-radius: 3px; height: 8px; overflow: hidden; }
+  .trend-bar-fill { height: 100%; border-radius: 3px; background: #378ADD; transition: width 0.3s; }
+  .trend-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 72px; text-align: right; flex-shrink: 0; }
+  .trend-row.current .trend-month { color: var(--text); font-weight: 600; }
+  .trend-row.current .trend-bar-fill { background: #185FA5; }
+  .section-title { font-size: 12px; font-weight: 500; color: var(--text2); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 8px; }
+  .sync-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #EAF3DE; color: #27500A; font-weight: 500; }
+  @media (prefers-color-scheme: dark) { .sync-badge { background: #1a2e0d; color: #97C459; } }
+  /* Settings */
+  .setting-label { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+  .setting-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
+  .step-list { font-size: 13px; color: var(--text2); line-height: 2.2; }
+  .code-block { background: var(--bg2); border-radius: var(--radius-sm); padding: 12px; margin: 12px 0; border: 0.5px solid var(--border); }
+  .code-block pre { font-family: 'Menlo', 'SF Mono', monospace; font-size: 11px; color: var(--text); white-space: pre-wrap; line-height: 1.7; }
+  .copy-btn { font-size: 12px; padding: 6px 14px; border: 0.5px solid var(--border2); border-radius: 6px; background: var(--bg); color: var(--text2); cursor: pointer; }
+  .save-btn { width: 100%; padding: 13px; background: var(--text); color: var(--bg); border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 11px 22px; border-radius: 99px; font-size: 14px; font-weight: 500; opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; z-index: 100; }
+  .toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>家計簿</h1>
+    <p id="today-label"></p>
+  </div>
+
+  <!-- 記録タブ -->
+  <div class="tab-content active" id="tab-input">
+    <div style="height:12px;"></div>
+    <div class="card">
+      <div class="field">
+        <label>日付</label>
+        <input type="date" id="date-input">
+      </div>
+      <div class="field">
+        <label>種別</label>
+        <div class="cat-grid">
+          <button class="cat-btn" onclick="selectCat(this,'食費')"><span class="icon">🍚</span>食費</button>
+          <button class="cat-btn" onclick="selectCat(this,'デート費')"><span class="icon">💑</span>デート費</button>
+          <button class="cat-btn" onclick="selectCat(this,'日用品')"><span class="icon">🧴</span>日用品</button>
+          <button class="cat-btn" onclick="selectCat(this,'交通費')"><span class="icon">🚃</span>交通費</button>
+          <button class="cat-btn" onclick="selectCat(this,'光熱費')"><span class="icon">💡</span>光熱費</button>
+          <button class="cat-btn" onclick="selectCat(this,'その他')"><span class="icon">📦</span>その他</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>項目</label>
+        <input type="text" id="item-input" placeholder="例：スーパー、ランチ…">
+      </div>
+      <div class="field">
+        <label>費用（円）</label>
+        <input type="number" id="cost-input" placeholder="0" min="0" inputmode="numeric">
+      </div>
+      <div class="field">
+        <label>支払い者</label>
+        <div class="payer-grid">
+          <button class="payer-btn" id="payer-fumiya" onclick="selectPayer('Fumiya')">
+            <div class="avatar avatar-f">F</div>Fumiya
+          </button>
+          <button class="payer-btn" id="payer-yuma" onclick="selectPayer('Yuma')">
+            <div class="avatar avatar-y">Y</div>Yuma
+          </button>
+        </div>
+      </div>
+      <button class="submit-btn" onclick="submitEntry()">記録する</button>
+    </div>
+  </div>
+
+  <!-- 履歴タブ -->
+  <div class="tab-content" id="tab-history">
+    <div style="height:12px;"></div>
+    <div id="no-sheet-warning" class="no-sheet" style="display:none;">
+      ⚠️ スプレッドシート連携が未設定です。「設定」タブからURLを登録してください。
+    </div>
+    <div class="summary-grid">
+      <div class="sum-card"><div class="lbl">今月の合計</div><div class="val" id="total-amount">¥0</div></div>
+      <div class="sum-card"><div class="lbl">件数</div><div class="val" id="total-count">0件</div></div>
+    </div>
+    <div class="card">
+      <div class="history-header">
+        <span id="sync-status"></span>
+        <button class="refresh-btn" onclick="loadData()">↻ 更新</button>
+      </div>
+      <div id="history-list"><div class="loading">読み込み中…</div></div>
+    </div>
+  </div>
+
+  <!-- 分析タブ -->
+  <div class="tab-content" id="tab-analytics">
+    <div style="height:12px;"></div>
+    <div id="analytics-no-sheet" class="no-sheet" style="display:none;">
+      ⚠️ スプレッドシート連携が未設定です。「設定」タブからURLを登録してください。
+    </div>
+
+    <!-- 月セレクター -->
+    <div class="month-selector">
+      <button class="month-nav" onclick="changeMonth(-1)">‹</button>
+      <span class="month-label" id="analytics-month-label"></span>
+      <button class="month-nav" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <!-- 支払い者フィルター -->
+    <div class="payer-tabs">
+      <button class="payer-tab active" onclick="selectPayerFilter('all', this)">全員</button>
+      <button class="payer-tab" onclick="selectPayerFilter('Fumiya', this)">Fumiya</button>
+      <button class="payer-tab" onclick="selectPayerFilter('Yuma', this)">Yuma</button>
+    </div>
+
+    <!-- 種別内訳 -->
+    <div class="card">
+      <div class="section-title">種別内訳</div>
+      <div id="cat-breakdown"><div class="loading">読み込み中…</div></div>
+    </div>
+
+    <!-- 支払い者別 -->
+    <div id="payer-split-section">
+      <div class="payer-split" id="payer-split"></div>
+    </div>
+
+    <!-- 月別推移 -->
+    <div class="card">
+      <div class="section-title">月別推移（過去6ヶ月）</div>
+      <div id="monthly-trend"><div class="loading">読み込み中…</div></div>
+    </div>
+  </div>
+
+  <!-- 設定タブ -->
+  <div class="tab-content" id="tab-settings">
+    <div style="height:12px;"></div>
+    <div class="card">
+      <div class="setting-label">Googleスプレッドシート連携</div>
+      <div class="setting-desc">Apps ScriptのWebアプリURLを入力すると、記録・履歴・分析すべてがスプレッドシートと同期されます。</div>
+      <input type="url" id="sheet-url" placeholder="https://script.google.com/..." style="margin-bottom:8px;">
+      <button class="save-btn" onclick="saveSheetUrl()">URLを保存</button>
+    </div>
+    <div class="card">
+      <div class="setting-label">Apps Script 設定手順</div>
+      <div class="step-list">
+        1. Googleスプレッドシートを開く<br>
+        2. 拡張機能 → Apps Script<br>
+        3. 下のコードを全部貼り付け<br>
+        4. デプロイ → 新しいデプロイ → ウェブアプリ<br>
+        5. アクセス：「全員」に設定してデプロイ<br>
+        6. 発行されたURLを上に入力して保存
+      </div>
+      <div class="code-block">
+        <pre id="gas-code">function doPost(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getActiveSheet();
+  const data = JSON.parse(e.postData.contents);
+  const date = new Date(data.date);
+  const days = ['日','月','火','水','木','金','土'];
+  sheet.appendRow([
+    data.date,
+    days[date.getDay()],
+    data.category,
+    data.item,
+    data.cost,
+    data.payer
+  ]);
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getActiveSheet();
+  // 1行目はヘッダーなのでスキップ
+  const rows = sheet.getDataRange().getValues().slice(1);
+  const entries = rows
+    .filter(r => r[0])
+    .map(r => ({
+      date: String(r[0]).substring(0, 10),
+      weekday: r[1],
+      category: r[2],
+      item: r[3],
+      cost: Number(r[4]) || 0,
+      payer: r[5]
+    }));
+  return ContentService
+    .createTextOutput(JSON.stringify(entries))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+        <button class="copy-btn" onclick="copyCode()">コードをコピー</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-input" onclick="switchTab('input')">
+    <span class="nav-icon">✚</span>記録
+  </button>
+  <button class="nav-btn" id="nav-history" onclick="switchTab('history')">
+    <span class="nav-icon">📋</span>履歴
+  </button>
+  <button class="nav-btn" id="nav-analytics" onclick="switchTab('analytics')">
+    <span class="nav-icon">📊</span>分析
+  </button>
+  <button class="nav-btn" id="nav-settings" onclick="switchTab('settings')">
+    <span class="nav-icon">⚙️</span>設定
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CATEGORIES = ['食費','デート費','日用品','交通費','光熱費','その他'];
+const CAT_COLORS = ['#378ADD','#5DCAA5','#EF9F27','#D85A30','#888780','#AFA9EC'];
+
+let selectedCat = '';
+let selectedPayer = '';
+let sheetUrl = localStorage.getItem('kakeibo_sheet_url') || '';
+let allEntries = [];
+let analyticsYear, analyticsMonth, payerFilter = 'all';
+
+function init() {
+  const today = new Date();
+  analyticsYear = today.getFullYear();
+  analyticsMonth = today.getMonth() + 1;
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const dd = String(today.getDate()).padStart(2,'0');
+  document.getElementById('date-input').value = `${yyyy}-${mm}-${dd}`;
+  const days = ['日','月','火','水','木','金','土'];
+  document.getElementById('today-label').textContent = `${yyyy}年${mm}月${dd}日（${days[today.getDay()]}）`;
+  if (sheetUrl) document.getElementById('sheet-url').value = sheetUrl;
+  updateAnalyticsMonthLabel();
+}
+
+function selectCat(el, cat) {
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  selectedCat = cat;
+}
+
+function selectPayer(payer) {
+  document.querySelectorAll('.payer-btn').forEach(b => b.classList.remove('active-f','active-y'));
+  if (payer === 'Fumiya') document.getElementById('payer-fumiya').classList.add('active-f');
+  if (payer === 'Yuma') document.getElementById('payer-yuma').classList.add('active-y');
+  selectedPayer = payer;
+}
+
+function switchTab(tab) {
+  ['input','history','analytics','settings'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('nav-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab === 'history') loadData();
+  if (tab === 'analytics') loadData();
+}
+
+async function loadData() {
+  const warning = document.getElementById('no-sheet-warning');
+  const analyticsWarning = document.getElementById('analytics-no-sheet');
+
+  if (!sheetUrl) {
+    if (warning) warning.style.display = 'block';
+    if (analyticsWarning) analyticsWarning.style.display = 'block';
+    document.getElementById('history-list').innerHTML = '<div class="empty">スプレッドシート未連携</div>';
+    document.getElementById('total-amount').textContent = '¥0';
+    document.getElementById('total-count').textContent = '0件';
+    renderAnalytics([]);
+    return;
+  }
+
+  if (warning) warning.style.display = 'none';
+  if (analyticsWarning) analyticsWarning.style.display = 'none';
+  document.getElementById('history-list').innerHTML = '<div class="loading">読み込み中…</div>';
+
+  try {
+    const res = await fetch(sheetUrl, { method: 'GET' });
+    allEntries = await res.json();
+
+    // 履歴レンダリング
+    const now = new Date();
+    const thisMonth = allEntries.filter(e => {
+      const d = new Date(e.date);
+      return d.getFullYear()===now.getFullYear() && d.getMonth()===now.getMonth();
+    });
+    const total = thisMonth.reduce((s,e) => s+(Number(e.cost)||0), 0);
+    document.getElementById('total-amount').textContent = '¥'+total.toLocaleString();
+    document.getElementById('total-count').textContent = thisMonth.length+'件';
+
+    const hh = String(now.getHours()).padStart(2,'0');
+    const min = String(now.getMinutes()).padStart(2,'0');
+    document.getElementById('sync-status').innerHTML = `<span class="sync-badge">✓ ${hh}:${min} 同期済み</span>`;
+
+    if (!allEntries.length) {
+      document.getElementById('history-list').innerHTML = '<div class="empty">まだ記録がありません</div>';
+    } else {
+      document.getElementById('history-list').innerHTML = [...allEntries].reverse().map(e => `
+        <div class="entry">
+          <span class="entry-cat">${e.category||''}</span>
+          <div class="entry-info">
+            <div class="entry-name">${e.item||''}</div>
+            <div class="entry-meta">${e.date||''} · ${e.payer||''}</div>
+          </div>
+          <div class="entry-amount">¥${(Number(e.cost)||0).toLocaleString()}</div>
+        </div>
+      `).join('');
+    }
+
+    renderAnalytics(allEntries);
+  } catch(err) {
+    document.getElementById('history-list').innerHTML = '<div class="empty">読み込みに失敗しました</div>';
+  }
+}
+
+function updateAnalyticsMonthLabel() {
+  document.getElementById('analytics-month-label').textContent = `${analyticsYear}年${analyticsMonth}月`;
+}
+
+function changeMonth(delta) {
+  analyticsMonth += delta;
+  if (analyticsMonth > 12) { analyticsMonth = 1; analyticsYear++; }
+  if (analyticsMonth < 1) { analyticsMonth = 12; analyticsYear--; }
+  updateAnalyticsMonthLabel();
+  renderAnalytics(allEntries);
+}
+
+function selectPayerFilter(payer, el) {
+  payerFilter = payer;
+  document.querySelectorAll('.payer-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderAnalytics(allEntries);
+}
+
+function renderAnalytics(entries) {
+  // フィルタリング
+  const monthEntries = entries.filter(e => {
+    const d = new Date(e.date);
+    return d.getFullYear() === analyticsYear && d.getMonth() + 1 === analyticsMonth;
+  });
+  const filtered = payerFilter === 'all' ? monthEntries : monthEntries.filter(e => e.payer === payerFilter);
+
+  const total = filtered.reduce((s,e) => s+(Number(e.cost)||0), 0);
+
+  // 種別内訳
+  const catBreakdown = document.getElementById('cat-breakdown');
+  if (!filtered.length) {
+    catBreakdown.innerHTML = '<div class="empty">データがありません</div>';
+  } else {
+    const maxCat = Math.max(...CATEGORIES.map(cat => filtered.filter(e=>e.category===cat).reduce((s,e)=>s+(Number(e.cost)||0),0)));
+    catBreakdown.innerHTML = CATEGORIES.map((cat, i) => {
+      const catTotal = filtered.filter(e=>e.category===cat).reduce((s,e)=>s+(Number(e.cost)||0),0);
+      const pct = maxCat > 0 ? (catTotal / maxCat * 100) : 0;
+      return `
+        <div class="cat-row">
+          <div class="cat-row-label">${cat}</div>
+          <div class="cat-bar-wrap">
+            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%;background:${CAT_COLORS[i]};"></div></div>
+          </div>
+          <div class="cat-row-amount">${catTotal>0?'¥'+catTotal.toLocaleString():'-'}</div>
+        </div>
+      `;
+    }).join('') + `<div class="total-row"><span>合計</span><span>¥${total.toLocaleString()}</span></div>`;
+  }
+
+  // 支払い者別（全員表示時のみ）
+  const splitSection = document.getElementById('payer-split-section');
+  if (payerFilter === 'all') {
+    const fumiyaTotal = monthEntries.filter(e=>e.payer==='Fumiya').reduce((s,e)=>s+(Number(e.cost)||0),0);
+    const yumaTotal = monthEntries.filter(e=>e.payer==='Yuma').reduce((s,e)=>s+(Number(e.cost)||0),0);
+    const allTotal = fumiyaTotal + yumaTotal;
+    splitSection.innerHTML = `<div class="payer-split">
+      <div class="payer-split-card">
+        <div class="payer-split-name">Fumiya</div>
+        <div class="payer-split-val">¥${fumiyaTotal.toLocaleString()}</div>
+        <div class="payer-split-pct">${allTotal>0?Math.round(fumiyaTotal/allTotal*100):0}%</div>
+      </div>
+      <div class="payer-split-card">
+        <div class="payer-split-name">Yuma</div>
+        <div class="payer-split-val">¥${yumaTotal.toLocaleString()}</div>
+        <div class="payer-split-pct">${allTotal>0?Math.round(yumaTotal/allTotal*100):0}%</div>
+      </div>
+    </div>`;
+  } else {
+    splitSection.innerHTML = '';
+  }
+
+  // 月別推移
+  const trendEl = document.getElementById('monthly-trend');
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    let y = analyticsYear, m = analyticsMonth - i;
+    while (m < 1) { m += 12; y--; }
+    while (m > 12) { m -= 12; y++; }
+    const mEntries = payerFilter === 'all'
+      ? entries.filter(e => { const d=new Date(e.date); return d.getFullYear()===y && d.getMonth()+1===m; })
+      : entries.filter(e => { const d=new Date(e.date); return d.getFullYear()===y && d.getMonth()+1===m && e.payer===payerFilter; });
+    months.push({ y, m, total: mEntries.reduce((s,e)=>s+(Number(e.cost)||0),0) });
+  }
+  const maxTrend = Math.max(...months.map(m=>m.total), 1);
+  trendEl.innerHTML = months.map(mo => {
+    const isCurrent = mo.y===analyticsYear && mo.m===analyticsMonth;
+    const pct = mo.total / maxTrend * 100;
+    return `<div class="trend-row ${isCurrent?'current':''}">
+      <div class="trend-month">${mo.m}月</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:${pct}%;"></div></div>
+      <div class="trend-amount">${mo.total>0?'¥'+mo.total.toLocaleString():'-'}</div>
+    </div>`;
+  }).join('');
+}
+
+async function submitEntry() {
+  const date = document.getElementById('date-input').value;
+  const item = document.getElementById('item-input').value.trim();
+  const cost = parseInt(document.getElementById('cost-input').value) || 0;
+  if (!date || !selectedCat || !item || !cost || !selectedPayer) {
+    showToast('すべての項目を入力してください'); return;
+  }
+  if (!sheetUrl) { showToast('⚠️ 設定からURLを登録してください'); return; }
+  const entry = { date, category: selectedCat, item, cost, payer: selectedPayer };
+  try {
+    await fetch(sheetUrl, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body: JSON.stringify(entry) });
+    showToast('記録しました ✓');
+    document.getElementById('item-input').value = '';
+    document.getElementById('cost-input').value = '';
+    document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.payer-btn').forEach(b=>b.classList.remove('active-f','active-y'));
+    selectedCat=''; selectedPayer='';
+  } catch(err) { showToast('送信に失敗しました'); }
+}
+
+function saveSheetUrl() {
+  sheetUrl = document.getElementById('sheet-url').value.trim();
+  localStorage.setItem('kakeibo_sheet_url', sheetUrl);
+  showToast('URLを保存しました');
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(document.getElementById('gas-code').textContent)
+    .then(()=>showToast('コードをコピーしました'));
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>
