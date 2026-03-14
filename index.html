@@ -44,21 +44,24 @@
     -webkit-appearance: none; appearance: none;
   }
   input:focus { border-color: #378ADD; background: var(--bg); }
-  /* 7種別：4+3レイアウト */
   .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
   .cat-grid-sub { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 7px; }
   .cat-btn { padding: 10px 2px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 11px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1.3; }
   .cat-btn .icon { font-size: 18px; }
   .cat-btn.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; }
   @media (prefers-color-scheme: dark) { .cat-btn.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
-  .payer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .payer-btn { padding: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 15px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+  /* 支払い者：3人グリッド */
+  .payer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .payer-btn { padding: 12px 6px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 13px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; }
+  .avatar-h { background: #CECBF6; color: #3C3489; }
   .avatar-f { background: #C0DD97; color: #27500A; }
   .avatar-y { background: #F5C4B3; color: #712B13; }
+  .payer-btn.active-h { background: #EEEDFE; border-color: #534AB7; color: #3C3489; }
   .payer-btn.active-f { background: #EAF3DE; border-color: #639922; color: #27500A; }
   .payer-btn.active-y { background: #FAECE7; border-color: #D85A30; color: #712B13; }
   @media (prefers-color-scheme: dark) {
+    .payer-btn.active-h { background: #1a1840; border-color: #534AB7; color: #AFA9EC; }
     .payer-btn.active-f { background: #1a2e0d; border-color: #639922; color: #97C459; }
     .payer-btn.active-y { background: #2e1508; border-color: #D85A30; color: #F0997B; }
   }
@@ -82,14 +85,13 @@
   .loading { text-align: center; padding: 2rem 0; color: var(--text3); font-size: 14px; }
   .no-sheet { background: #FFF8E6; border: 0.5px solid #EF9F27; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 13px; color: #633806; line-height: 1.7; margin-bottom: 12px; }
   @media (prefers-color-scheme: dark) { .no-sheet { background: #2a1e05; border-color: #BA7517; color: #FAC775; } }
-  /* Analytics */
   .month-selector { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .month-nav { width: 36px; height: 36px; border: 0.5px solid var(--border2); border-radius: 50%; background: var(--bg2); color: var(--text2); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
+  .month-label { font-size: 16px; font-weight: 600; color: var(--text); }
   .payer-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-  .payer-tab { flex: 1; padding: 8px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); font-size: 13px; color: var(--text2); cursor: pointer; text-align: center; }
+  .payer-tab { flex: 1; padding: 8px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); font-size: 12px; color: var(--text2); cursor: pointer; text-align: center; }
   .payer-tab.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; font-weight: 500; }
   @media (prefers-color-scheme: dark) { .payer-tab.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
-  .month-label { font-size: 16px; font-weight: 600; color: var(--text); }
   .cat-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
   .cat-row:last-child { border-bottom: none; }
   .cat-row-label { font-size: 12px; color: var(--text); width: 80px; flex-shrink: 0; }
@@ -98,14 +100,14 @@
   .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
   .cat-row-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 72px; text-align: right; flex-shrink: 0; }
   .total-row { display: flex; justify-content: space-between; padding: 10px 0 2px; font-size: 14px; font-weight: 600; color: var(--text); border-top: 0.5px solid var(--border2); margin-top: 4px; }
-  .payer-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-  .payer-split-card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 12px 14px; }
+  .payer-split { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+  .payer-split-card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 12px 10px; }
   .payer-split-name { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
-  .payer-split-val { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -0.5px; }
+  .payer-split-val { font-size: 17px; font-weight: 600; color: var(--text); letter-spacing: -0.5px; }
   .payer-split-pct { font-size: 11px; color: var(--text2); margin-top: 2px; }
   .trend-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 0.5px solid var(--border); }
   .trend-row:last-child { border-bottom: none; }
-  .trend-month { font-size: 13px; color: var(--text2); width: 52px; flex-shrink: 0; }
+  .trend-month { font-size: 13px; color: var(--text2); width: 60px; flex-shrink: 0; }
   .trend-bar-bg { flex: 1; background: var(--bg2); border-radius: 3px; height: 8px; overflow: hidden; }
   .trend-bar-fill { height: 100%; border-radius: 3px; background: #378ADD; transition: width 0.3s; }
   .trend-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 72px; text-align: right; flex-shrink: 0; }
@@ -132,7 +134,6 @@
     <p id="today-label"></p>
   </div>
 
-  <!-- 記録タブ -->
   <div class="tab-content active" id="tab-input">
     <div style="height:12px;"></div>
     <div class="card">
@@ -165,6 +166,9 @@
       <div class="field">
         <label>支払い者</label>
         <div class="payer-grid">
+          <button class="payer-btn" id="payer-home" onclick="selectPayer('HOME')">
+            <div class="avatar avatar-h">H</div>HOME
+          </button>
           <button class="payer-btn" id="payer-fumiya" onclick="selectPayer('Fumiya')">
             <div class="avatar avatar-f">F</div>Fumiya
           </button>
@@ -177,7 +181,6 @@
     </div>
   </div>
 
-  <!-- 履歴タブ -->
   <div class="tab-content" id="tab-history">
     <div style="height:12px;"></div>
     <div id="no-sheet-warning" class="no-sheet" style="display:none;">
@@ -196,7 +199,6 @@
     </div>
   </div>
 
-  <!-- 分析タブ -->
   <div class="tab-content" id="tab-analytics">
     <div style="height:12px;"></div>
     <div id="analytics-no-sheet" class="no-sheet" style="display:none;">
@@ -209,6 +211,7 @@
     </div>
     <div class="payer-tabs">
       <button class="payer-tab active" onclick="selectPayerFilter('all', this)">全員</button>
+      <button class="payer-tab" onclick="selectPayerFilter('HOME', this)">HOME</button>
       <button class="payer-tab" onclick="selectPayerFilter('Fumiya', this)">Fumiya</button>
       <button class="payer-tab" onclick="selectPayerFilter('Yuma', this)">Yuma</button>
     </div>
@@ -223,7 +226,6 @@
     </div>
   </div>
 
-  <!-- 設定タブ -->
   <div class="tab-content" id="tab-settings">
     <div style="height:12px;"></div>
     <div class="card">
@@ -304,7 +306,6 @@ function doGet(e) {
 <div class="toast" id="toast"></div>
 
 <script>
-// スプレッドシートの全種別（分析用）
 const ALL_CATEGORIES = [
   '0_固定費','1_食費','2_日用品','3_デート費',
   '4_光熱費','5_設備費','6_交通関連費','7_積立金','8_結婚式関連費','9_他'
@@ -313,6 +314,7 @@ const CAT_COLORS = [
   '#534AB7','#378ADD','#5DCAA5','#D4537E',
   '#EF9F27','#888780','#1D9E75','#BA7517','#D85A30','#AFA9EC'
 ];
+const PAYERS = ['HOME','Fumiya','Yuma'];
 
 let selectedCat = '';
 let selectedPayer = '';
@@ -341,9 +343,10 @@ function selectCat(el, cat) {
 }
 
 function selectPayer(payer) {
-  document.querySelectorAll('.payer-btn').forEach(b => b.classList.remove('active-f','active-y'));
+  document.querySelectorAll('.payer-btn').forEach(b => b.classList.remove('active-h','active-f','active-y'));
+  if (payer === 'HOME')   document.getElementById('payer-home').classList.add('active-h');
   if (payer === 'Fumiya') document.getElementById('payer-fumiya').classList.add('active-f');
-  if (payer === 'Yuma') document.getElementById('payer-yuma').classList.add('active-y');
+  if (payer === 'Yuma')   document.getElementById('payer-yuma').classList.add('active-y');
   selectedPayer = payer;
 }
 
@@ -433,7 +436,7 @@ function renderAnalytics(entries) {
   const filtered = payerFilter === 'all' ? monthEntries : monthEntries.filter(e => e.payer === payerFilter);
   const total = filtered.reduce((s,e) => s+(Number(e.cost)||0), 0);
 
-  // 種別内訳（データに存在する種別のみ表示）
+  // 種別内訳
   const catBreakdown = document.getElementById('cat-breakdown');
   const catTotals = ALL_CATEGORIES.map((cat, i) => ({
     cat, color: CAT_COLORS[i],
@@ -458,21 +461,16 @@ function renderAnalytics(entries) {
   // 支払い者別（全員表示時のみ）
   const splitSection = document.getElementById('payer-split-section');
   if (payerFilter === 'all') {
-    const fumiyaTotal = monthEntries.filter(e=>e.payer==='Fumiya').reduce((s,e)=>s+(Number(e.cost)||0),0);
-    const yumaTotal = monthEntries.filter(e=>e.payer==='Yuma').reduce((s,e)=>s+(Number(e.cost)||0),0);
-    const allTotal = fumiyaTotal + yumaTotal;
-    splitSection.innerHTML = `<div class="payer-split">
-      <div class="payer-split-card">
-        <div class="payer-split-name">Fumiya</div>
-        <div class="payer-split-val">¥${fumiyaTotal.toLocaleString()}</div>
-        <div class="payer-split-pct">${allTotal>0?Math.round(fumiyaTotal/allTotal*100):0}%</div>
-      </div>
-      <div class="payer-split-card">
-        <div class="payer-split-name">Yuma</div>
-        <div class="payer-split-val">¥${yumaTotal.toLocaleString()}</div>
-        <div class="payer-split-pct">${allTotal>0?Math.round(yumaTotal/allTotal*100):0}%</div>
-      </div>
-    </div>`;
+    const cards = PAYERS.map(p => {
+      const pt = monthEntries.filter(e=>e.payer===p).reduce((s,e)=>s+(Number(e.cost)||0),0);
+      const allTotal = monthEntries.reduce((s,e)=>s+(Number(e.cost)||0),0);
+      return `<div class="payer-split-card">
+        <div class="payer-split-name">${p}</div>
+        <div class="payer-split-val">¥${pt.toLocaleString()}</div>
+        <div class="payer-split-pct">${allTotal>0?Math.round(pt/allTotal*100):0}%</div>
+      </div>`;
+    }).join('');
+    splitSection.innerHTML = `<div class="payer-split">${cards}</div>`;
   } else {
     splitSection.innerHTML = '';
   }
@@ -514,7 +512,7 @@ async function submitEntry() {
     document.getElementById('item-input').value = '';
     document.getElementById('cost-input').value = '';
     document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.payer-btn').forEach(b=>b.classList.remove('active-f','active-y'));
+    document.querySelectorAll('.payer-btn').forEach(b=>b.classList.remove('active-h','active-f','active-y'));
     selectedCat=''; selectedPayer='';
   } catch(err) { showToast('送信に失敗しました'); }
 }
