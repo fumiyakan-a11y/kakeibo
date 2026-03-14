@@ -44,9 +44,11 @@
     -webkit-appearance: none; appearance: none;
   }
   input:focus { border-color: #378ADD; background: var(--bg); }
-  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .cat-btn { padding: 12px 4px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 13px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .cat-btn .icon { font-size: 20px; }
+  /* 7種別：4+3レイアウト */
+  .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .cat-grid-sub { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 7px; }
+  .cat-btn { padding: 10px 2px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); cursor: pointer; font-size: 11px; color: var(--text2); text-align: center; transition: all 0.1s; display: flex; flex-direction: column; align-items: center; gap: 3px; line-height: 1.3; }
+  .cat-btn .icon { font-size: 18px; }
   .cat-btn.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; }
   @media (prefers-color-scheme: dark) { .cat-btn.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
   .payer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -70,7 +72,7 @@
   .refresh-btn { font-size: 12px; padding: 6px 12px; border: 0.5px solid var(--border2); border-radius: 6px; background: var(--bg2); color: var(--text2); cursor: pointer; }
   .entry { display: flex; align-items: center; gap: 10px; padding: 11px 0; border-bottom: 0.5px solid var(--border); }
   .entry:last-child { border-bottom: none; }
-  .entry-cat { font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; font-weight: 500; }
+  .entry-cat { font-size: 11px; padding: 3px 7px; border-radius: 99px; background: #E6F1FB; color: #185FA5; white-space: nowrap; font-weight: 500; }
   @media (prefers-color-scheme: dark) { .entry-cat { background: #0d2a45; color: #85B7EB; } }
   .entry-info { flex: 1; min-width: 0; }
   .entry-name { font-size: 14px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -83,19 +85,18 @@
   /* Analytics */
   .month-selector { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
   .month-nav { width: 36px; height: 36px; border: 0.5px solid var(--border2); border-radius: 50%; background: var(--bg2); color: var(--text2); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
-  .month-nav:active { background: var(--bg3); }
-  .month-label { font-size: 16px; font-weight: 600; color: var(--text); }
   .payer-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
   .payer-tab { flex: 1; padding: 8px; border: 0.5px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); font-size: 13px; color: var(--text2); cursor: pointer; text-align: center; }
   .payer-tab.active { background: #E6F1FB; border-color: #378ADD; color: #185FA5; font-weight: 500; }
   @media (prefers-color-scheme: dark) { .payer-tab.active { background: #0d2a45; border-color: #378ADD; color: #85B7EB; } }
+  .month-label { font-size: 16px; font-weight: 600; color: var(--text); }
   .cat-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 0.5px solid var(--border); }
   .cat-row:last-child { border-bottom: none; }
-  .cat-row-label { font-size: 13px; color: var(--text); width: 68px; flex-shrink: 0; }
+  .cat-row-label { font-size: 12px; color: var(--text); width: 80px; flex-shrink: 0; }
   .cat-bar-wrap { flex: 1; }
   .cat-bar-bg { background: var(--bg2); border-radius: 3px; height: 8px; overflow: hidden; }
   .cat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-  .cat-row-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 68px; text-align: right; flex-shrink: 0; }
+  .cat-row-amount { font-size: 13px; font-weight: 500; color: var(--text); width: 72px; text-align: right; flex-shrink: 0; }
   .total-row { display: flex; justify-content: space-between; padding: 10px 0 2px; font-size: 14px; font-weight: 600; color: var(--text); border-top: 0.5px solid var(--border2); margin-top: 4px; }
   .payer-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
   .payer-split-card { background: var(--bg); border-radius: var(--radius); border: 0.5px solid var(--border); padding: 12px 14px; }
@@ -113,7 +114,6 @@
   .section-title { font-size: 12px; font-weight: 500; color: var(--text2); letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 8px; }
   .sync-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 99px; background: #EAF3DE; color: #27500A; font-weight: 500; }
   @media (prefers-color-scheme: dark) { .sync-badge { background: #1a2e0d; color: #97C459; } }
-  /* Settings */
   .setting-label { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
   .setting-desc { font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 12px; }
   .step-list { font-size: 13px; color: var(--text2); line-height: 2.2; }
@@ -143,12 +143,15 @@
       <div class="field">
         <label>種別</label>
         <div class="cat-grid">
-          <button class="cat-btn" onclick="selectCat(this,'食費')"><span class="icon">🍚</span>食費</button>
-          <button class="cat-btn" onclick="selectCat(this,'デート費')"><span class="icon">💑</span>デート費</button>
-          <button class="cat-btn" onclick="selectCat(this,'日用品')"><span class="icon">🧴</span>日用品</button>
-          <button class="cat-btn" onclick="selectCat(this,'交通費')"><span class="icon">🚃</span>交通費</button>
-          <button class="cat-btn" onclick="selectCat(this,'光熱費')"><span class="icon">💡</span>光熱費</button>
-          <button class="cat-btn" onclick="selectCat(this,'その他')"><span class="icon">📦</span>その他</button>
+          <button class="cat-btn" onclick="selectCat(this,'0_固定費')"><span class="icon">🏠</span>固定費</button>
+          <button class="cat-btn" onclick="selectCat(this,'1_食費')"><span class="icon">🍚</span>食費</button>
+          <button class="cat-btn" onclick="selectCat(this,'2_日用品')"><span class="icon">🧴</span>日用品</button>
+          <button class="cat-btn" onclick="selectCat(this,'3_デート費')"><span class="icon">💑</span>デート費</button>
+        </div>
+        <div class="cat-grid-sub">
+          <button class="cat-btn" onclick="selectCat(this,'4_光熱費')"><span class="icon">💡</span>光熱費</button>
+          <button class="cat-btn" onclick="selectCat(this,'5_設備費')"><span class="icon">🔧</span>設備費</button>
+          <button class="cat-btn" onclick="selectCat(this,'6_交通関連費')"><span class="icon">🚃</span>交通関連費</button>
         </div>
       </div>
       <div class="field">
@@ -199,33 +202,21 @@
     <div id="analytics-no-sheet" class="no-sheet" style="display:none;">
       ⚠️ スプレッドシート連携が未設定です。「設定」タブからURLを登録してください。
     </div>
-
-    <!-- 月セレクター -->
     <div class="month-selector">
       <button class="month-nav" onclick="changeMonth(-1)">‹</button>
       <span class="month-label" id="analytics-month-label"></span>
       <button class="month-nav" onclick="changeMonth(1)">›</button>
     </div>
-
-    <!-- 支払い者フィルター -->
     <div class="payer-tabs">
       <button class="payer-tab active" onclick="selectPayerFilter('all', this)">全員</button>
       <button class="payer-tab" onclick="selectPayerFilter('Fumiya', this)">Fumiya</button>
       <button class="payer-tab" onclick="selectPayerFilter('Yuma', this)">Yuma</button>
     </div>
-
-    <!-- 種別内訳 -->
     <div class="card">
       <div class="section-title">種別内訳</div>
       <div id="cat-breakdown"><div class="loading">読み込み中…</div></div>
     </div>
-
-    <!-- 支払い者別 -->
-    <div id="payer-split-section">
-      <div class="payer-split" id="payer-split"></div>
-    </div>
-
-    <!-- 月別推移 -->
+    <div id="payer-split-section"></div>
     <div class="card">
       <div class="section-title">月別推移（過去6ヶ月）</div>
       <div id="monthly-trend"><div class="loading">読み込み中…</div></div>
@@ -237,7 +228,7 @@
     <div style="height:12px;"></div>
     <div class="card">
       <div class="setting-label">Googleスプレッドシート連携</div>
-      <div class="setting-desc">Apps ScriptのWebアプリURLを入力すると、記録・履歴・分析すべてがスプレッドシートと同期されます。</div>
+      <div class="setting-desc">Apps ScriptのWebアプリURLを入力すると、記録・履歴・分析すべてが「06_[入力用]家計簿」シートと同期されます。</div>
       <input type="url" id="sheet-url" placeholder="https://script.google.com/..." style="margin-bottom:8px;">
       <button class="save-btn" onclick="saveSheetUrl()">URLを保存</button>
     </div>
@@ -254,7 +245,7 @@
       <div class="code-block">
         <pre id="gas-code">function doPost(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getActiveSheet();
+  const sheet = ss.getSheetByName('06_[入力用]家計簿');
   const data = JSON.parse(e.postData.contents);
   const date = new Date(data.date);
   const days = ['日','月','火','水','木','金','土'];
@@ -273,8 +264,7 @@
 
 function doGet(e) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  const sheet = ss.getActiveSheet();
-  // 1行目はヘッダーなのでスキップ
+  const sheet = ss.getSheetByName('06_[入力用]家計簿');
   const rows = sheet.getDataRange().getValues().slice(1);
   const entries = rows
     .filter(r => r[0])
@@ -314,8 +304,15 @@ function doGet(e) {
 <div class="toast" id="toast"></div>
 
 <script>
-const CATEGORIES = ['食費','デート費','日用品','交通費','光熱費','その他'];
-const CAT_COLORS = ['#378ADD','#5DCAA5','#EF9F27','#D85A30','#888780','#AFA9EC'];
+// スプレッドシートの全種別（分析用）
+const ALL_CATEGORIES = [
+  '0_固定費','1_食費','2_日用品','3_デート費',
+  '4_光熱費','5_設備費','6_交通関連費','7_積立金','8_結婚式関連費','9_他'
+];
+const CAT_COLORS = [
+  '#534AB7','#378ADD','#5DCAA5','#D4537E',
+  '#EF9F27','#888780','#1D9E75','#BA7517','#D85A30','#AFA9EC'
+];
 
 let selectedCat = '';
 let selectedPayer = '';
@@ -355,14 +352,12 @@ function switchTab(tab) {
     document.getElementById('tab-'+t).classList.toggle('active', t===tab);
     document.getElementById('nav-'+t).classList.toggle('active', t===tab);
   });
-  if (tab === 'history') loadData();
-  if (tab === 'analytics') loadData();
+  if (tab === 'history' || tab === 'analytics') loadData();
 }
 
 async function loadData() {
   const warning = document.getElementById('no-sheet-warning');
   const analyticsWarning = document.getElementById('analytics-no-sheet');
-
   if (!sheetUrl) {
     if (warning) warning.style.display = 'block';
     if (analyticsWarning) analyticsWarning.style.display = 'block';
@@ -372,7 +367,6 @@ async function loadData() {
     renderAnalytics([]);
     return;
   }
-
   if (warning) warning.style.display = 'none';
   if (analyticsWarning) analyticsWarning.style.display = 'none';
   document.getElementById('history-list').innerHTML = '<div class="loading">読み込み中…</div>';
@@ -381,7 +375,6 @@ async function loadData() {
     const res = await fetch(sheetUrl, { method: 'GET' });
     allEntries = await res.json();
 
-    // 履歴レンダリング
     const now = new Date();
     const thisMonth = allEntries.filter(e => {
       const d = new Date(e.date);
@@ -395,20 +388,17 @@ async function loadData() {
     const min = String(now.getMinutes()).padStart(2,'0');
     document.getElementById('sync-status').innerHTML = `<span class="sync-badge">✓ ${hh}:${min} 同期済み</span>`;
 
-    if (!allEntries.length) {
-      document.getElementById('history-list').innerHTML = '<div class="empty">まだ記録がありません</div>';
-    } else {
-      document.getElementById('history-list').innerHTML = [...allEntries].reverse().map(e => `
-        <div class="entry">
-          <span class="entry-cat">${e.category||''}</span>
-          <div class="entry-info">
-            <div class="entry-name">${e.item||''}</div>
-            <div class="entry-meta">${e.date||''} · ${e.payer||''}</div>
-          </div>
-          <div class="entry-amount">¥${(Number(e.cost)||0).toLocaleString()}</div>
-        </div>
-      `).join('');
-    }
+    document.getElementById('history-list').innerHTML = allEntries.length
+      ? [...allEntries].reverse().map(e => `
+          <div class="entry">
+            <span class="entry-cat">${e.category||''}</span>
+            <div class="entry-info">
+              <div class="entry-name">${e.item||''}</div>
+              <div class="entry-meta">${e.date||''} · ${e.payer||''}</div>
+            </div>
+            <div class="entry-amount">¥${(Number(e.cost)||0).toLocaleString()}</div>
+          </div>`).join('')
+      : '<div class="empty">まだ記録がありません</div>';
 
     renderAnalytics(allEntries);
   } catch(err) {
@@ -436,34 +426,33 @@ function selectPayerFilter(payer, el) {
 }
 
 function renderAnalytics(entries) {
-  // フィルタリング
   const monthEntries = entries.filter(e => {
     const d = new Date(e.date);
     return d.getFullYear() === analyticsYear && d.getMonth() + 1 === analyticsMonth;
   });
   const filtered = payerFilter === 'all' ? monthEntries : monthEntries.filter(e => e.payer === payerFilter);
-
   const total = filtered.reduce((s,e) => s+(Number(e.cost)||0), 0);
 
-  // 種別内訳
+  // 種別内訳（データに存在する種別のみ表示）
   const catBreakdown = document.getElementById('cat-breakdown');
-  if (!filtered.length) {
+  const catTotals = ALL_CATEGORIES.map((cat, i) => ({
+    cat, color: CAT_COLORS[i],
+    total: filtered.filter(e => e.category === cat).reduce((s,e) => s+(Number(e.cost)||0), 0)
+  })).filter(c => c.total > 0).sort((a,b) => b.total - a.total);
+
+  if (!catTotals.length) {
     catBreakdown.innerHTML = '<div class="empty">データがありません</div>';
   } else {
-    const maxCat = Math.max(...CATEGORIES.map(cat => filtered.filter(e=>e.category===cat).reduce((s,e)=>s+(Number(e.cost)||0),0)));
-    catBreakdown.innerHTML = CATEGORIES.map((cat, i) => {
-      const catTotal = filtered.filter(e=>e.category===cat).reduce((s,e)=>s+(Number(e.cost)||0),0);
-      const pct = maxCat > 0 ? (catTotal / maxCat * 100) : 0;
-      return `
-        <div class="cat-row">
-          <div class="cat-row-label">${cat}</div>
-          <div class="cat-bar-wrap">
-            <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${pct}%;background:${CAT_COLORS[i]};"></div></div>
-          </div>
-          <div class="cat-row-amount">${catTotal>0?'¥'+catTotal.toLocaleString():'-'}</div>
+    const maxVal = catTotals[0].total;
+    catBreakdown.innerHTML = catTotals.map(c => `
+      <div class="cat-row">
+        <div class="cat-row-label">${c.cat}</div>
+        <div class="cat-bar-wrap">
+          <div class="cat-bar-bg"><div class="cat-bar-fill" style="width:${c.total/maxVal*100}%;background:${c.color};"></div></div>
         </div>
-      `;
-    }).join('') + `<div class="total-row"><span>合計</span><span>¥${total.toLocaleString()}</span></div>`;
+        <div class="cat-row-amount">¥${c.total.toLocaleString()}</div>
+      </div>`).join('')
+      + `<div class="total-row"><span>合計</span><span>¥${total.toLocaleString()}</span></div>`;
   }
 
   // 支払い者別（全員表示時のみ）
@@ -494,7 +483,6 @@ function renderAnalytics(entries) {
   for (let i = 5; i >= 0; i--) {
     let y = analyticsYear, m = analyticsMonth - i;
     while (m < 1) { m += 12; y--; }
-    while (m > 12) { m -= 12; y++; }
     const mEntries = payerFilter === 'all'
       ? entries.filter(e => { const d=new Date(e.date); return d.getFullYear()===y && d.getMonth()+1===m; })
       : entries.filter(e => { const d=new Date(e.date); return d.getFullYear()===y && d.getMonth()+1===m && e.payer===payerFilter; });
@@ -503,10 +491,9 @@ function renderAnalytics(entries) {
   const maxTrend = Math.max(...months.map(m=>m.total), 1);
   trendEl.innerHTML = months.map(mo => {
     const isCurrent = mo.y===analyticsYear && mo.m===analyticsMonth;
-    const pct = mo.total / maxTrend * 100;
     return `<div class="trend-row ${isCurrent?'current':''}">
-      <div class="trend-month">${mo.m}月</div>
-      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:${pct}%;"></div></div>
+      <div class="trend-month">${mo.y}年${mo.m}月</div>
+      <div class="trend-bar-bg"><div class="trend-bar-fill" style="width:${mo.total/maxTrend*100}%;"></div></div>
       <div class="trend-amount">${mo.total>0?'¥'+mo.total.toLocaleString():'-'}</div>
     </div>`;
   }).join('');
